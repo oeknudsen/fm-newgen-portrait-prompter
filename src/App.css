@@ -58,7 +58,8 @@
 }
 
 .control-group select,
-.control-group input[type="number"] {
+.control-group input[type="number"],
+.control-group input[type="text"] {
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -66,23 +67,31 @@
   background: white;
   cursor: pointer;
   transition: border-color 0.2s;
+  width: 100%;
 }
 
 .control-group select:hover,
-.control-group input[type="number"]:hover {
+.control-group input[type="number"]:hover,
+.control-group input[type="text"]:hover {
   border-color: #164936;
 }
 
 .control-group select:focus,
-.control-group input[type="number"]:focus {
+.control-group input[type="number"]:focus,
+.control-group input[type="text"]:focus {
   outline: none;
   border-color: #164936;
   box-shadow: 0 0 0 2px rgba(22, 73, 54, 0.1);
 }
 
-.control-group input[type="number"] {
+.control-group input[type="number"],
+.control-group input[type="text"] {
   cursor: text;
-  width: 100%;
+}
+
+.control-group input[type="text"]::placeholder {
+  color: #999;
+  opacity: 1;
 }
 
 .seed-display {

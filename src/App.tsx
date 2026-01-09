@@ -1,93 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Region, Gender } from './types';
+import { Gender, ALL_NATIONALITIES } from './types';
 import { buildPrompt } from './utils/promptBuilder';
 import { generateSeed } from './utils/seededRNG';
 import './App.css';
 
-const REGIONS: Region[] = [
-  'Afroamerican',
-  'Afrocaribbean',
-  'AlbanianGreek',
-  'Anglosphere',
-  'ArabGulf',
-  'Armenian',
-  'Baltics',
-  'BrazilMixed',
-  'CaucasianNA',
-  'Caucasus',
-  'CentralAfrica',
-  'CentralAsian',
-  'CentralEurope',
-  'China',
-  'EastAfrica',
-  'EastBalkan',
-  'EastSlavic',
-  'Filipino',
-  'Finstonia',
-  'France',
-  'HornOfAfrica',
-  'Hungary',
-  'Iceland',
-  'IndigenousSA',
-  'Indonesia',
-  'Iran',
-  'Ireland',
-  'Italia',
-  'Japan',
-  'Korea',
-  'Maghreb',
-  'MainlandSEA',
-  'Malaysia',
-  'Mashriq',
-  'Mestizo',
-  'MixedRace',
-  'Mongolia',
-  'Netherlands',
-  'PacificIslanders',
-  'Poland',
-  'Portugal',
-  'Romania',
-  'SahelianAfrica',
-  'Scandinavian',
-  'Singapore',
-  'SouthAsia',
-  'SouthConeSA',
-  'SouthernAfrica',
-  'Spain',
-  'Staff',
-  'Turkish',
-  'Uzbekistan',
-  'Vietnam',
-  'WestAfrica',
-  'WestBalkan',
-  'WestSlavic',
-];
-
-// Helper function to format region names for display
-function formatRegionName(region: Region): string {
-  // Handle special acronyms first
-  const acronyms: Record<string, string> = {
-    'NA': 'North America',
-    'SA': 'South America',
-    'SEA': 'Southeast Asia',
-  };
-  
-  // Insert spaces before capital letters
-  let formatted = region
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2');
-  
-  // Replace known acronyms
-  Object.entries(acronyms).forEach(([acronym, expansion]) => {
-    formatted = formatted.replace(new RegExp(`\\b${acronym}\\b`, 'g'), expansion);
-  });
-  
-  // Capitalize first letter
-  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
-}
-
 function App() {
-  const [region, setRegion] = useState<Region>('Scandinavian');
+  const [nationality, setNationality] = useState<string>('Spanish');
+  const [secondNationality, setSecondNationality] = useState<string>('');
+  const [region, setRegion] = useState<string>('');
   const [age, setAge] = useState<number>(20);
   const [gender, setGender] = useState<Gender>('male');
   const [seed, setSeed] = useState<string>('');
@@ -99,13 +19,20 @@ function App() {
     setSeed(generateSeed());
   }, []);
 
-  // Regenerate prompt whenever region, age, gender, or seed changes
+  // Regenerate prompt whenever nationality, secondNationality, region, age, gender, or seed changes
   useEffect(() => {
-    if (seed) {
-      const newPrompt = buildPrompt(region, age, gender, seed);
+    if (seed && nationality) {
+      const newPrompt = buildPrompt(
+        nationality,
+        secondNationality || null,
+        age,
+        gender,
+        region || null,
+        seed
+      );
       setPrompt(newPrompt);
     }
-  }, [region, age, gender, seed]);
+  }, [nationality, secondNationality, region, age, gender, seed]);
 
   const handleNewSeed = () => {
     const newSeed = generateSeed();
@@ -114,7 +41,14 @@ function App() {
   };
 
   const handleGenerate = () => {
-    const newPrompt = buildPrompt(region, age, gender, seed);
+    const newPrompt = buildPrompt(
+      nationality,
+      secondNationality || null,
+      age,
+      gender,
+      region || null,
+      seed
+    );
     setPrompt(newPrompt);
     setCopied(false);
   };
@@ -139,18 +73,45 @@ function App() {
       <main className="main">
         <div className="controls">
           <div className="control-group">
-            <label htmlFor="region">Region:</label>
+            <label htmlFor="nationality">Nationality:</label>
             <select
-              id="region"
-              value={region}
-              onChange={(e) => setRegion(e.target.value as Region)}
+              id="nationality"
+              value={nationality}
+              onChange={(e) => setNationality(e.target.value)}
             >
-              {REGIONS.map((r) => (
-                <option key={r} value={r}>
-                  {formatRegionName(r)}
+              {ALL_NATIONALITIES.map((nat) => (
+                <option key={nat} value={nat}>
+                  {nat}
                 </option>
               ))}
             </select>
+          </div>
+
+          <div className="control-group">
+            <label htmlFor="secondNationality">Second Nationality (optional):</label>
+            <select
+              id="secondNationality"
+              value={secondNationality}
+              onChange={(e) => setSecondNationality(e.target.value)}
+            >
+              <option value="">None</option>
+              {ALL_NATIONALITIES.map((nat) => (
+                <option key={nat} value={nat}>
+                  {nat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="control-group">
+            <label htmlFor="region">Region (optional):</label>
+            <input
+              id="region"
+              type="text"
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              placeholder="e.g., Iberia, Scandinavia"
+            />
           </div>
 
           <div className="control-group">

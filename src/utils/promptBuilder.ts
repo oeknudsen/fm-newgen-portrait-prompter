@@ -4,9 +4,7 @@
  */
 
 import {
-  Region,
   Gender,
-  REGION_NATIONALITIES,
   HAIR_OPTIONS_MALE,
   HAIR_OPTIONS_FEMALE,
   FACIAL_HAIR_OPTIONS,
@@ -21,7 +19,7 @@ import { createSeededRNG, pickOne } from './seededRNG';
 
 // Base prompt template
 const BASE_PROMPT = `Create a hyper-realistic professional football player headshot portrait of a
-young {{NATIONALITY}} {{GENDER_FOOTBALLER}} ({{AGE_RANGE}}).
+young {{NATIONALITY}} {{GENDER_FOOTBALLER}} ({{AGE_RANGE}}){{REGION_TEXT}}.
 
 The subject is photographed from the shoulders up, facing directly toward the camera,
 centered and symmetrical.
@@ -57,24 +55,36 @@ Ultra-high resolution, photorealistic.`;
 
 /**
  * Build the complete prompt with seeded variations
- * @param region - Selected region
+ * @param nationality - Selected nationality
+ * @param secondNationality - Optional second nationality
  * @param age - Selected age (number)
  * @param gender - Selected gender
+ * @param region - Optional region text
  * @param seed - Seed string for deterministic randomization
  * @returns Complete prompt string
  */
 export function buildPrompt(
-  region: Region,
+  nationality: string,
+  secondNationality: string | null,
   age: number,
   gender: Gender,
+  region: string | null,
   seed: string
 ): string {
   // Create seeded RNG
   const rng = createSeededRNG(seed);
 
-  // Select nationality deterministically based on region and seed
-  const nationalities = REGION_NATIONALITIES[region];
-  const nationality = pickOne(nationalities, rng);
+  // Build nationality string: "Nationality" or "Nationality-SecondNationality"
+  let nationalityText = nationality;
+  if (secondNationality && secondNationality.trim() !== '') {
+    nationalityText = `${nationality}-${secondNationality}`;
+  }
+
+  // Build region text if provided
+  let regionText = '';
+  if (region && region.trim() !== '') {
+    regionText = ` from ${region.trim()}`;
+  }
 
   // Select gender-appropriate hair style
   const hairOptions = gender === 'male' ? HAIR_OPTIONS_MALE : HAIR_OPTIONS_FEMALE;
@@ -116,9 +126,10 @@ export function buildPrompt(
   // Replace placeholders in base prompt (keep base prompt intact)
   const genderFootballer = gender === 'male' ? 'male footballer' : 'female footballer';
   let prompt = BASE_PROMPT
-    .replace('{{NATIONALITY}}', nationality)
+    .replace('{{NATIONALITY}}', nationalityText)
     .replace('{{AGE_RANGE}}', age.toString())
     .replace('{{GENDER_FOOTBALLER}}', genderFootballer)
+    .replace('{{REGION_TEXT}}', regionText)
     .replace('{{FACIAL_HAIR_LINE}}', facialHairLine);
 
   // Append seeded variations section

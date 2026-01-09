@@ -1,127 +1,160 @@
 // Type definitions for the prompt generator
 
-export type Region =
-  | 'Afroamerican'
-  | 'Afrocaribbean'
-  | 'AlbanianGreek'
-  | 'Anglosphere'
-  | 'ArabGulf'
-  | 'Armenian'
-  | 'Baltics'
-  | 'BrazilMixed'
-  | 'CaucasianNA'
-  | 'Caucasus'
-  | 'CentralAfrica'
-  | 'CentralAsian'
-  | 'CentralEurope'
-  | 'China'
-  | 'EastAfrica'
-  | 'EastBalkan'
-  | 'EastSlavic'
-  | 'Filipino'
-  | 'Finstonia'
-  | 'France'
-  | 'HornOfAfrica'
-  | 'Hungary'
-  | 'Iceland'
-  | 'IndigenousSA'
-  | 'Indonesia'
-  | 'Iran'
-  | 'Ireland'
-  | 'Italia'
-  | 'Japan'
-  | 'Korea'
-  | 'Maghreb'
-  | 'MainlandSEA'
-  | 'Malaysia'
-  | 'Mashriq'
-  | 'Mestizo'
-  | 'MixedRace'
-  | 'Mongolia'
-  | 'Netherlands'
-  | 'PacificIslanders'
-  | 'Poland'
-  | 'Portugal'
-  | 'Romania'
-  | 'SahelianAfrica'
-  | 'Scandinavian'
-  | 'Singapore'
-  | 'SouthAsia'
-  | 'SouthConeSA'
-  | 'SouthernAfrica'
-  | 'Spain'
-  | 'Staff'
-  | 'Turkish'
-  | 'Uzbekistan'
-  | 'Vietnam'
-  | 'WestAfrica'
-  | 'WestBalkan'
-  | 'WestSlavic';
-
 // Age is now a number input field
 export type Age = number;
 
 export type Gender = 'male' | 'female';
 
-// Region to nationalities mapping
-export const REGION_NATIONALITIES: Record<Region, string[]> = {
-  'Afroamerican': ['African American', 'Black American'],
-  'Afrocaribbean': ['Jamaican', 'Haitian', 'Trinidadian', 'Barbadian', 'Guyanese'],
-  'AlbanianGreek': ['Albanian', 'Greek'],
-  'Anglosphere': ['English', 'American', 'Australian', 'Canadian', 'New Zealander', 'Scottish', 'Welsh'],
-  'ArabGulf': ['Saudi Arabian', 'Emirati', 'Qatari', 'Kuwaiti', 'Bahraini', 'Omani'],
-  'Armenian': ['Armenian'],
-  'Baltics': ['Estonian', 'Latvian', 'Lithuanian'],
-  'BrazilMixed': ['Brazilian'],
-  'CaucasianNA': ['White American', 'White Canadian'],
-  'Caucasus': ['Georgian', 'Azerbaijani', 'Chechen', 'Dagestani'],
-  'CentralAfrica': ['Central African', 'Congolese', 'Cameroonian', 'Gabonese', 'Equatorial Guinean'],
-  'CentralAsian': ['Kazakh', 'Uzbek', 'Kyrgyz', 'Tajik', 'Turkmen'],
-  'CentralEurope': ['German', 'Austrian', 'Swiss', 'Czech', 'Slovak'],
-  'China': ['Chinese'],
-  'EastAfrica': ['Kenyan', 'Tanzanian', 'Ugandan', 'Rwandan', 'Burundian'],
-  'EastBalkan': ['Bulgarian', 'Romanian', 'Moldovan'],
-  'EastSlavic': ['Russian', 'Ukrainian', 'Belarusian'],
-  'Filipino': ['Filipino'],
-  'Finstonia': ['Finnish', 'Estonian'],
-  'France': ['French'],
-  'HornOfAfrica': ['Somali', 'Eritrean', 'Djiboutian', 'Ethiopian'],
-  'Hungary': ['Hungarian'],
-  'Iceland': ['Icelandic'],
-  'IndigenousSA': ['Indigenous South American', 'Quechua', 'Aymara', 'Guarani'],
-  'Indonesia': ['Indonesian'],
-  'Iran': ['Iranian', 'Persian'],
-  'Ireland': ['Irish'],
-  'Italia': ['Italian'],
-  'Japan': ['Japanese'],
-  'Korea': ['Korean', 'South Korean', 'North Korean'],
-  'Maghreb': ['Moroccan', 'Algerian', 'Tunisian', 'Libyan'],
-  'MainlandSEA': ['Thai', 'Vietnamese', 'Cambodian', 'Laotian', 'Myanmar'],
-  'Malaysia': ['Malaysian'],
-  'Mashriq': ['Lebanese', 'Syrian', 'Jordanian', 'Palestinian', 'Iraqi'],
-  'Mestizo': ['Mestizo', 'Mixed Latin American'],
-  'MixedRace': ['Mixed Race', 'Multiracial'],
-  'Mongolia': ['Mongolian'],
-  'Netherlands': ['Dutch'],
-  'PacificIslanders': ['Fijian', 'Samoan', 'Tongan', 'Papua New Guinean', 'Solomon Islander'],
-  'Poland': ['Polish'],
-  'Portugal': ['Portuguese'],
-  'Romania': ['Romanian'],
-  'SahelianAfrica': ['Malian', 'Nigerien', 'Chadian', 'Burkina Faso', 'Mauritanian'],
-  'Scandinavian': ['Norwegian', 'Swedish', 'Danish', 'Finnish'],
-  'Singapore': ['Singaporean'],
-  'SouthAsia': ['Indian', 'Pakistani', 'Bangladeshi', 'Sri Lankan', 'Nepalese'],
-  'SouthConeSA': ['Argentine', 'Chilean', 'Uruguayan', 'Paraguayan'],
-  'SouthernAfrica': ['South African', 'Namibian', 'Botswanan', 'Zimbabwean'],
-  'Spain': ['Spanish'],
-  'Staff': ['Staff', 'Generic'],
-  'Turkish': ['Turkish'],
-  'Uzbekistan': ['Uzbek'],
-  'Vietnam': ['Vietnamese'],
-  'WestAfrica': ['Nigerian', 'Ghanaian', 'Senegalese', 'Ivorian', 'Guinean', 'Sierra Leonean'],
-  'WestBalkan': ['Serbian', 'Croatian', 'Bosnian', 'Slovenian', 'Montenegrin', 'North Macedonian'],
-  'WestSlavic': ['Polish', 'Czech', 'Slovak'],
-};
+// Comprehensive list of all nationalities (sorted alphabetically)
+export const ALL_NATIONALITIES: string[] = [
+  'African American',
+  'Albanian',
+  'Algerian',
+  'American',
+  'Argentine',
+  'Armenian',
+  'Australian',
+  'Austrian',
+  'Azerbaijani',
+  'Aymara',
+  'Bahraini',
+  'Bangladeshi',
+  'Barbadian',
+  'Belarusian',
+  'Black American',
+  'Bosnian',
+  'Botswanan',
+  'Brazilian',
+  'Bulgarian',
+  'Burkina Faso',
+  'Burundian',
+  'Cambodian',
+  'Cameroonian',
+  'Canadian',
+  'Central African',
+  'Chadian',
+  'Chechen',
+  'Chilean',
+  'Chinese',
+  'Colombian',
+  'Congolese',
+  'Croatian',
+  'Czech',
+  'Dagestani',
+  'Danish',
+  'Djiboutian',
+  'Dutch',
+  'Ecuadorian',
+  'Emirati',
+  'English',
+  'Equatorial Guinean',
+  'Eritrean',
+  'Estonian',
+  'Ethiopian',
+  'Fijian',
+  'Filipino',
+  'Finnish',
+  'French',
+  'Gabonese',
+  'Georgian',
+  'German',
+  'Ghanaian',
+  'Greek',
+  'Guarani',
+  'Guinean',
+  'Guyanese',
+  'Haitian',
+  'Hungarian',
+  'Icelandic',
+  'Indian',
+  'Indigenous South American',
+  'Indonesian',
+  'Iranian',
+  'Irish',
+  'Italian',
+  'Ivorian',
+  'Jamaican',
+  'Japanese',
+  'Jordanian',
+  'Kazakh',
+  'Kenyan',
+  'Korean',
+  'Kuwaiti',
+  'Kyrgyz',
+  'Laotian',
+  'Latvian',
+  'Lebanese',
+  'Libyan',
+  'Lithuanian',
+  'Malaysian',
+  'Malian',
+  'Mauritanian',
+  'Mestizo',
+  'Mixed Latin American',
+  'Mixed Race',
+  'Moldovan',
+  'Montenegrin',
+  'Mongolian',
+  'Multiracial',
+  'Myanmar',
+  'Namibian',
+  'Nepalese',
+  'New Zealander',
+  'Nigerian',
+  'Nigerien',
+  'North Korean',
+  'North Macedonian',
+  'Norwegian',
+  'Omani',
+  'Palestinian',
+  'Papua New Guinean',
+  'Paraguayan',
+  'Persian',
+  'Peruvian',
+  'Polish',
+  'Portuguese',
+  'Qatari',
+  'Quechua',
+  'Romanian',
+  'Russian',
+  'Rwandan',
+  'Samoan',
+  'Saudi Arabian',
+  'Scottish',
+  'Senegalese',
+  'Serbian',
+  'Sierra Leonean',
+  'Singaporean',
+  'Slovak',
+  'Slovenian',
+  'Solomon Islander',
+  'Somali',
+  'South African',
+  'South Korean',
+  'Spanish',
+  'Sri Lankan',
+  'Staff',
+  'Swedish',
+  'Swiss',
+  'Syrian',
+  'Tajik',
+  'Tanzanian',
+  'Thai',
+  'Tongan',
+  'Trinidadian',
+  'Tunisian',
+  'Turkish',
+  'Turkmen',
+  'Ugandan',
+  'Ukrainian',
+  'Uruguayan',
+  'Uzbek',
+  'Vietnamese',
+  'Welsh',
+  'White American',
+  'White Canadian',
+  'Zimbabwean',
+].sort();
 
 // Hair options by gender
 export const HAIR_OPTIONS_MALE = [
