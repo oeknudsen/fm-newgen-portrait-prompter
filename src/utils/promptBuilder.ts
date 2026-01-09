@@ -5,8 +5,6 @@
 
 import {
   Gender,
-  HAIR_OPTIONS_MALE,
-  HAIR_OPTIONS_FEMALE,
   FACIAL_HAIR_OPTIONS,
   EXPRESSION_OPTIONS,
   FACIAL_STRUCTURE_OPTIONS,
@@ -14,6 +12,7 @@ import {
   EYEBROW_OPTIONS,
   NOSE_OPTIONS,
   EAR_OPTIONS,
+  getHairOptionsForNationalities,
 } from '../types';
 import { createSeededRNG, pickOne } from './seededRNG';
 
@@ -86,8 +85,12 @@ export function buildPrompt(
     regionText = ` from ${region.trim()}`;
   }
 
-  // Select gender-appropriate hair style
-  const hairOptions = gender === 'male' ? HAIR_OPTIONS_MALE : HAIR_OPTIONS_FEMALE;
+  // Select gender-appropriate hair style based on nationality
+  const hairOptions = getHairOptionsForNationalities(
+    nationality,
+    secondNationality,
+    gender
+  );
   const hair = pickOne(hairOptions, rng);
 
   // Select facial hair (male only)
@@ -112,12 +115,9 @@ export function buildPrompt(
   if (gender === 'male') {
     if (facialHair === 'clean-shaven') {
       facialHairLine = 'Facial hair is clean-shaven.';
-    } else if (facialHair === 'light stubble') {
-      facialHairLine = 'Facial hair is natural where appropriate (light stubble).';
-    } else if (facialHair === 'short beard') {
-      facialHairLine = 'Facial hair is natural where appropriate (short beard).';
     } else {
-      facialHairLine = 'Facial hair is natural where appropriate (trimmed goatee).';
+      // Handle all other facial hair styles generically
+      facialHairLine = `Facial hair is natural where appropriate (${facialHair}).`;
     }
   } else {
     facialHairLine = 'No facial hair.';
