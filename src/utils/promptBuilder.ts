@@ -123,7 +123,7 @@ export function buildPrompt(
     facialHairLine = 'No facial hair.';
   }
 
-  // Replace placeholders in base prompt (keep base prompt intact)
+  // Replace placeholders in base prompt and blend seeded variations
   const genderFootballer = gender === 'male' ? 'male footballer' : 'female footballer';
   let prompt = BASE_PROMPT
     .replace('{{NATIONALITY}}', nationalityText)
@@ -132,23 +132,38 @@ export function buildPrompt(
     .replace('{{REGION_TEXT}}', regionText)
     .replace('{{FACIAL_HAIR_LINE}}', facialHairLine);
 
-  // Append seeded variations section
-  const variations: string[] = [
-    `Hair: ${hair}`,
-    `Facial structure: ${facialStructure}`,
-    `Skin: ${skinDetail}`,
-    `Expression: ${expression}`,
-  ];
+  // Blend expression into the prompt
+  prompt = prompt.replace(
+    'Expression is neutral and calm, mouth closed, no smile.',
+    `Expression is ${expression}, mouth closed, no smile.`
+  );
 
-  if (gender === 'male') {
-    variations.push(`Facial hair: ${facialHair}`);
-  }
+  // Blend hair style into the prompt
+  prompt = prompt.replace(
+    'Hair is natural and realistic, styled like a professional footballer,\nwith visible strand detail.',
+    `Hair is natural and realistic, styled like a professional footballer (${hair}),\nwith visible strand detail.`
+  );
 
-  variations.push(`Eyebrows: ${eyebrows}`);
-  variations.push(`Nose: ${nose}`);
-  variations.push(`Ears: ${ears}`);
+  // Blend skin details into the prompt
+  prompt = prompt.replace(
+    'Skin texture is highly realistic with visible pores, freckles, light acne,\nnatural blemishes, and subtle facial asymmetry.',
+    `Skin texture is highly realistic with ${skinDetail},\nnatural blemishes, and subtle facial asymmetry.`
+  );
 
-  prompt += `\n\nSeeded variations: ${variations.join('; ')}.`;
+  // Blend facial structure into the prompt (add after the subject description)
+  prompt = prompt.replace(
+    'The subject is photographed from the shoulders up, facing directly toward the camera,\ncentered and symmetrical.',
+    `The subject is photographed from the shoulders up, facing directly toward the camera,\ncentered and symmetrical.\nFacial structure features ${facialStructure}.`
+  );
+
+  // Blend eyebrow, nose, and ear details into the prompt (add after facial structure or in a natural place)
+  const facialFeatures = `Eyebrows are ${eyebrows}. Nose is ${nose}. Ears are ${ears} in prominence.`;
+  
+  // Insert facial features after facial structure
+  prompt = prompt.replace(
+    `Facial structure features ${facialStructure}.`,
+    `Facial structure features ${facialStructure}.\n${facialFeatures}`
+  );
 
   return prompt;
 }
