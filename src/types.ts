@@ -625,6 +625,202 @@ export const HAIR_BY_GROUP_FEMALE: Record<NationalityGroup, readonly string[]> =
   Universal: HAIR_OPTIONS_FEMALE,
 };
 
+// Facial hair mappings by nationality group (male only)
+// Based on genetic/cultural prevalence: East Asian often less dense; Middle Eastern/European/African often fuller
+export const FACIAL_HAIR_BY_GROUP: Record<NationalityGroup, readonly string[]> = {
+  African: [
+    'clean-shaven',
+    'light stubble',
+    'short beard',
+    'medium stubble',
+    'full beard',
+    'stubble beard',
+    'trimmed goatee',
+    'circle beard',
+    'soul patch',
+  ],
+  AfricanDiaspora: [
+    'clean-shaven',
+    'light stubble',
+    'short beard',
+    'medium stubble',
+    'full beard',
+    'stubble beard',
+    'trimmed goatee',
+    'circle beard',
+    'soul patch',
+    'extended goatee',
+  ],
+  Asian: [
+    'clean-shaven',
+    'light stubble',
+    'medium stubble',
+    'short beard',
+    'stubble beard',
+    'soul patch',
+    'moustache only',
+  ],
+  European: [
+    'clean-shaven',
+    'light stubble',
+    'short beard',
+    'trimmed goatee',
+    'medium stubble',
+    'full beard',
+    'stubble beard',
+    'van dyke',
+    'moustache only',
+    'soul patch',
+    'extended goatee',
+    'anchor beard',
+    'chinstrap',
+    'mutton chops',
+    'circle beard',
+  ],
+  MiddleEastern: [
+    'clean-shaven',
+    'short beard',
+    'full beard',
+    'trimmed goatee',
+    'medium stubble',
+    'stubble beard',
+    'circle beard',
+    'van dyke',
+    'extended goatee',
+    'anchor beard',
+    'chinstrap',
+  ],
+  LatinAmerican: [
+    'clean-shaven',
+    'light stubble',
+    'short beard',
+    'medium stubble',
+    'full beard',
+    'stubble beard',
+    'trimmed goatee',
+    'circle beard',
+    'soul patch',
+    'moustache only',
+  ],
+  Indigenous: [
+    'clean-shaven',
+    'light stubble',
+    'medium stubble',
+    'short beard',
+    'stubble beard',
+    'soul patch',
+  ],
+  Pacific: [
+    'clean-shaven',
+    'light stubble',
+    'short beard',
+    'medium stubble',
+    'full beard',
+    'stubble beard',
+    'trimmed goatee',
+    'circle beard',
+  ],
+  Mixed: [
+    'clean-shaven',
+    'light stubble',
+    'short beard',
+    'medium stubble',
+    'full beard',
+    'stubble beard',
+    'trimmed goatee',
+    'circle beard',
+    'soul patch',
+    'moustache only',
+  ],
+  Universal: [
+    'clean-shaven',
+    'light stubble',
+    'short beard',
+    'trimmed goatee',
+    'medium stubble',
+    'full beard',
+    'stubble beard',
+    'van dyke',
+    'moustache only',
+    'soul patch',
+    'extended goatee',
+    'anchor beard',
+    'chinstrap',
+    'mutton chops',
+    'circle beard',
+  ],
+};
+
+// Skin detail mappings by nationality group
+// Freckles and facial redness more common in fair/Celtic-European skin; pores/blemishes universal
+export const SKIN_DETAIL_BY_GROUP: Record<NationalityGroup, readonly string[]> = {
+  African: [
+    'pores + mild blemishes',
+    'under-eye texture',
+    'mild acne',
+    'slight redness around nose/cheeks',
+  ],
+  AfricanDiaspora: [
+    'pores + mild blemishes',
+    'under-eye texture',
+    'mild acne',
+    'slight redness around nose/cheeks',
+  ],
+  Asian: [
+    'pores + mild blemishes',
+    'under-eye texture',
+    'mild acne',
+    'slight redness around nose/cheeks',
+  ],
+  European: [
+    'pores + mild blemishes',
+    'visible freckles',
+    'mild acne',
+    'under-eye texture',
+    'slight redness around nose/cheeks',
+  ],
+  MiddleEastern: [
+    'pores + mild blemishes',
+    'under-eye texture',
+    'mild acne',
+    'slight redness around nose/cheeks',
+  ],
+  LatinAmerican: [
+    'pores + mild blemishes',
+    'visible freckles',
+    'mild acne',
+    'under-eye texture',
+    'slight redness around nose/cheeks',
+  ],
+  Indigenous: [
+    'pores + mild blemishes',
+    'under-eye texture',
+    'mild acne',
+    'slight redness around nose/cheeks',
+  ],
+  Pacific: [
+    'pores + mild blemishes',
+    'visible freckles',
+    'under-eye texture',
+    'mild acne',
+    'slight redness around nose/cheeks',
+  ],
+  Mixed: [
+    'pores + mild blemishes',
+    'visible freckles',
+    'mild acne',
+    'under-eye texture',
+    'slight redness around nose/cheeks',
+  ],
+  Universal: [
+    'pores + mild blemishes',
+    'visible freckles',
+    'mild acne',
+    'under-eye texture',
+    'slight redness around nose/cheeks',
+  ],
+};
+
 /**
  * Get appropriate hair options for a nationality
  * @param nationality - The nationality string
@@ -676,6 +872,72 @@ export function getHairOptionsForNationalities(
   return Array.from(combined);
 }
 
+/**
+ * Get facial hair options for a nationality (male only; used when building prompts).
+ * Uses same group logic as hair styles for cultural consistency.
+ */
+export function getFacialHairOptionsForNationality(
+  nationality: string
+): readonly string[] {
+  const groups = NATIONALITY_GROUPS[nationality] || ['Universal'];
+  const combined = new Set<string>();
+  groups.forEach((group) => {
+    FACIAL_HAIR_BY_GROUP[group].forEach((style) => combined.add(style));
+  });
+  return Array.from(combined);
+}
+
+/**
+ * Get facial hair options when multiple nationalities are selected.
+ */
+export function getFacialHairOptionsForNationalities(
+  nationality: string,
+  secondNationality: string | null
+): readonly string[] {
+  const primary = getFacialHairOptionsForNationality(nationality);
+  if (!secondNationality || secondNationality.trim() === '') {
+    return primary;
+  }
+  const secondary = getFacialHairOptionsForNationality(secondNationality);
+  const combined = new Set<string>();
+  primary.forEach((s) => combined.add(s));
+  secondary.forEach((s) => combined.add(s));
+  return Array.from(combined);
+}
+
+/**
+ * Get skin detail options for a nationality.
+ * Freckles/redness weighted more for European; all options for diverse groups.
+ */
+export function getSkinDetailOptionsForNationality(
+  nationality: string
+): readonly string[] {
+  const groups = NATIONALITY_GROUPS[nationality] || ['Universal'];
+  const combined = new Set<string>();
+  groups.forEach((group) => {
+    SKIN_DETAIL_BY_GROUP[group].forEach((detail) => combined.add(detail));
+  });
+  return Array.from(combined);
+}
+
+/**
+ * Get skin detail options when multiple nationalities are selected.
+ */
+export function getSkinDetailOptionsForNationalities(
+  nationality: string,
+  secondNationality: string | null
+): readonly string[] {
+  const primary = getSkinDetailOptionsForNationality(nationality);
+  if (!secondNationality || secondNationality.trim() === '') {
+    return primary;
+  }
+  const secondary = getSkinDetailOptionsForNationality(secondNationality);
+  const combined = new Set<string>();
+  primary.forEach((s) => combined.add(s));
+  secondary.forEach((s) => combined.add(s));
+  return Array.from(combined);
+}
+
 // Facial hair options (male only)
 export const FACIAL_HAIR_OPTIONS = [
   'clean-shaven',
@@ -712,6 +974,44 @@ export const EXPRESSION_OPTIONS = [
   'neutral with slight alertness',
   'focused gaze, mouth closed',
   'calm professional expression',
+  'thoughtful and contemplative',
+  'attentive and engaged',
+  'mild curiosity, eyes alert',
+  'reserved expression',
+  'pensive look',
+  'alert and attentive',
+  'serene expression',
+  'composed with slight intensity',
+  'quiet confidence',
+  'introspective gaze',
+  'steady and unwavering',
+  'calm with subtle warmth',
+  'earnest expression',
+  'thoughtful and focused',
+  'calm with gentle intensity',
+  'watchful expression',
+  'measured and composed',
+  'calm with quiet determination',
+  'reflective expression',
+  'mildly skeptical',
+  'contemplative and focused',
+  'composed with quiet intensity',
+  // Smiling expressions
+  'warm, genuine smile',
+  'slight, natural smile',
+  'soft smile',
+  'friendly smile',
+  'relaxed smile',
+  'warm smile, eyes engaged',
+  'subtle smile',
+  'gentle smile',
+  'warm and approachable smile',
+  'confident smile',
+  'bright smile',
+  'easy, natural smile',
+  'warm smile with relaxed eyes',
+  'friendly, open smile',
+  'slight smile, eyes warm',
 ] as const;
 
 // Facial structure options

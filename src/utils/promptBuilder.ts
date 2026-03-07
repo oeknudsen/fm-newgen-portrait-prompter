@@ -5,14 +5,14 @@
 
 import {
   Gender,
-  FACIAL_HAIR_OPTIONS,
   EXPRESSION_OPTIONS,
   FACIAL_STRUCTURE_OPTIONS,
-  SKIN_DETAIL_OPTIONS,
   EYEBROW_OPTIONS,
   NOSE_OPTIONS,
   EAR_OPTIONS,
   getHairOptionsForNationalities,
+  getFacialHairOptionsForNationalities,
+  getSkinDetailOptionsForNationalities,
 } from '../types';
 import { createSeededRNG, pickOne } from './seededRNG';
 
@@ -93,8 +93,11 @@ export function buildPrompt(
   );
   const hair = pickOne(hairOptions, rng);
 
-  // Select facial hair (male only)
-  const facialHair = gender === 'male' ? pickOne(FACIAL_HAIR_OPTIONS, rng) : null;
+  // Select facial hair (male only), filtered by nationality group
+  const facialHairOptions = gender === 'male'
+    ? getFacialHairOptionsForNationalities(nationality, secondNationality)
+    : [];
+  const facialHair = facialHairOptions.length > 0 ? pickOne(facialHairOptions, rng) : null;
 
   // Select expression
   const expression = pickOne(EXPRESSION_OPTIONS, rng);
@@ -102,8 +105,9 @@ export function buildPrompt(
   // Select facial structure
   const facialStructure = pickOne(FACIAL_STRUCTURE_OPTIONS, rng);
 
-  // Select skin details
-  const skinDetail = pickOne(SKIN_DETAIL_OPTIONS, rng);
+  // Select skin details by nationality group
+  const skinDetailOptions = getSkinDetailOptionsForNationalities(nationality, secondNationality);
+  const skinDetail = pickOne(skinDetailOptions, rng);
 
   // Select extras
   const eyebrows = pickOne(EYEBROW_OPTIONS, rng);
@@ -132,10 +136,14 @@ export function buildPrompt(
     .replace('{{REGION_TEXT}}', regionText)
     .replace('{{FACIAL_HAIR_LINE}}', facialHairLine);
 
-  // Blend expression into the prompt
+  // Blend expression into the prompt (omit "mouth closed, no smile" for smiling expressions)
+  const isSmilingExpression = expression.toLowerCase().includes('smile');
+  const expressionLine = isSmilingExpression
+    ? `Expression is ${expression}.`
+    : `Expression is ${expression}, mouth closed, no smile.`;
   prompt = prompt.replace(
     'Expression is neutral and calm, mouth closed, no smile.',
-    `Expression is ${expression}, mouth closed, no smile.`
+    expressionLine
   );
 
   // Blend hair style into the prompt
