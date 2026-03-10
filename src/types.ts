@@ -957,6 +957,30 @@ export const FACIAL_HAIR_OPTIONS = [
   'circle beard',
 ] as const;
 
+/** Age below which facial hair is restricted to lighter styles (less prominent for younger players). */
+export const YOUNG_FACIAL_HAIR_MAX_AGE = 24;
+
+/** Age below which facial hair is restricted to minimal styles (under 18 / minors). */
+export const MINOR_FACIAL_HAIR_MAX_AGE = 17;
+
+/** Minimal facial hair for under-18s: clean-shaven or light stubble only. */
+export const MINOR_FACIAL_HAIR_STYLES: readonly string[] = [
+  'clean-shaven',
+  'light stubble',
+];
+
+/** Lighter facial hair styles used for younger players; heavier styles (full beard, van dyke, etc.) are excluded. */
+export const LIGHT_FACIAL_HAIR_STYLES: readonly string[] = [
+  'clean-shaven',
+  'light stubble',
+  'short beard',
+  'trimmed goatee',
+  'medium stubble',
+  'stubble beard',
+  'moustache only',
+  'soul patch',
+];
+
 // Expression options (database style)
 export const EXPRESSION_OPTIONS = [
   'neutral and calm',

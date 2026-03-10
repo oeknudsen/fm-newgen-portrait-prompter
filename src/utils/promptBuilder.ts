@@ -13,6 +13,10 @@ import {
   getHairOptionsForNationalities,
   getFacialHairOptionsForNationalities,
   getSkinDetailOptionsForNationalities,
+  YOUNG_FACIAL_HAIR_MAX_AGE,
+  LIGHT_FACIAL_HAIR_STYLES,
+  MINOR_FACIAL_HAIR_MAX_AGE,
+  MINOR_FACIAL_HAIR_STYLES,
 } from '../types';
 import { createSeededRNG, pickOne } from './seededRNG';
 
@@ -93,10 +97,21 @@ export function buildPrompt(
   );
   const hair = pickOne(hairOptions, rng);
 
-  // Select facial hair (male only), filtered by nationality group
-  const facialHairOptions = gender === 'male'
+  // Select facial hair (male only), filtered by nationality group; minimal for under-18, lighter for young
+  let facialHairOptions = gender === 'male'
     ? getFacialHairOptionsForNationalities(nationality, secondNationality)
     : [];
+  if (gender === 'male' && facialHairOptions.length > 0) {
+    if (age <= MINOR_FACIAL_HAIR_MAX_AGE) {
+      const minorSet = new Set(MINOR_FACIAL_HAIR_STYLES);
+      const minorOptions = facialHairOptions.filter((style) => minorSet.has(style));
+      facialHairOptions = minorOptions.length > 0 ? minorOptions : [...MINOR_FACIAL_HAIR_STYLES];
+    } else if (age <= YOUNG_FACIAL_HAIR_MAX_AGE) {
+      const lightSet = new Set(LIGHT_FACIAL_HAIR_STYLES);
+      const youngOptions = facialHairOptions.filter((style) => lightSet.has(style));
+      facialHairOptions = youngOptions.length > 0 ? youngOptions : ['clean-shaven', 'light stubble'];
+    }
+  }
   const facialHair = facialHairOptions.length > 0 ? pickOne(facialHairOptions, rng) : null;
 
   // Select expression
